@@ -11,6 +11,8 @@ int vertZero, horzZero;  // Stores the initial value of each axis, usually aroun
 int vertValue, horzValue;  // Stores current analog output of each axis
 const int sensitivity = 250;  // Higher sensitivity value = slower mouse, should be <= about 500
 int mouseClickFlag = 0;
+int mouseClickFlag2 = 0;
+int mouseClickFlag3 = 0;
 float mash = 0.001;
 void setup()
 {
@@ -30,17 +32,25 @@ void loop()
 {
   vertValue = analogRead(vertPin) - vertZero;  // read vertical offset
   horzValue = analogRead(horzPin) - horzZero;  // read horizontal offset
-  if (digitalRead(key1Pin) == 0)
+  if ((digitalRead(key1Pin) == 0) && (!mouseClickFlag2))  // if the joystick button is pressed
   {
-    Mouse.press(MOUSE_LEFT);
-    Mouse.release(MOUSE_LEFT);
-    delay(100);
+    mouseClickFlag2 = 1;
+    Mouse.press(MOUSE_LEFT);  // click the left button down
   }
-  if (digitalRead(key2Pin) == LOW)
+  else if ((digitalRead(key1Pin))&&(mouseClickFlag2)) // if the joystick button is not pressed
   {
-    Mouse.press(MOUSE_RIGHT);
-    Mouse.release(MOUSE_RIGHT);
-    delay(100);
+    mouseClickFlag2 = 0;
+    Mouse.release(MOUSE_LEFT);  // release the left button
+  }
+  if ((digitalRead(key2Pin) == 0) && (!mouseClickFlag3))  // if the joystick button is pressed
+  {
+    mouseClickFlag3 = 1;
+    Mouse.press(MOUSE_RIGHT);  // click the left button down
+  }
+  else if ((digitalRead(key2Pin))&&(mouseClickFlag3)) // if the joystick button is not pressed
+  {
+    mouseClickFlag3 = 0;
+    Mouse.release(MOUSE_RIGHT);  // release the left button
   }
   if (vertValue != 0)
     Mouse.move(0, vertValue/sensitivity, 0);  // move mouse on y axis
